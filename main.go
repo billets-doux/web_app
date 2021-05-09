@@ -15,6 +15,8 @@ import (
 	"web_app/logger"
 	"web_app/routes"
 	"web_app/settings"
+	"web_app/utils/snowflake"
+	"web_app/validators"
 )
 
 func main() {
@@ -24,7 +26,7 @@ func main() {
 		return
 	}
 	//2.初始化日志
-	if err := logger.Init(settings.Conf.LogConfig); err != nil {
+	if err := logger.Init(settings.Conf.LogConfig, settings.Conf.Mode); err != nil {
 		fmt.Printf("init logger failed,err:%v\n", err)
 		return
 	}
@@ -41,6 +43,14 @@ func main() {
 		return
 	}
 	defer redis.Close()
+	if err := snowflake.Init(settings.Conf.StartTime, settings.Conf.MachineID); err != nil {
+		return
+	}
+	// 初始化gin框架内置的校验器使用的翻译器
+	if err := validators.InitTrans("zh"); err != nil {
+		fmt.Printf("init validators failed,err:%v\n", err)
+		return
+	}
 	//5.注册路由
 	r := routes.SetUp()
 

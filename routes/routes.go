@@ -3,8 +3,8 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"web_app/controllers"
 	"web_app/logger"
-	"web_app/settings"
 )
 
 func SetUp() *gin.Engine {
@@ -13,9 +13,8 @@ func SetUp() *gin.Engine {
 	r.GET("/", func(context *gin.Context) {
 		context.String(http.StatusOK, "ok")
 	})
-	r.GET("/version", func(context *gin.Context) {
 
-		context.String(http.StatusOK, settings.Conf.AppConfig.Version)
-	})
+	r.POST("/signup", controllers.SignUpHandler)
+	r.POST("/login", controllers.LoginHandler)
 	return r
 }
